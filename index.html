@@ -107,3 +107,39 @@ section{padding:44px 0 8px}
 /* ---------- bridge cards ---------- */
 .bridgegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}
 .bridge{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.bridge:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.bridge.top{border-color:var(--bronze);background:linear-gradient(160deg,#fffaf0,#fbf1d8)}
+.bridge .rank{position:absolute;top:0;right:0;background:var(--bronze);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:0 0 0 12px;text-transform:uppercase}
+.bridge h3{font-size:20px;font-weight:800;line-height:1.15;padding-right:64px}
+.bridge .win{font-size:14px;color:var(--ink2);font-weight:600;margin-top:4px}
+.bridge .nums{display:flex;gap:8px;margin:12px 0}
+.bridge .nums div{flex:1;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:9px 10px;text-align:center}
+.bridge .nums b{font-family:Fraunces,serif;font-size:22px;display:block;line-height:1}
+.bridge .nums span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.bridge .take{font-size:13.5px;background:#fbf1d8;border:1px dashed var(--bronze);border-radius:10px;padding:9px 12px}
+.bridge .take b{color:var(--rust)}
+.bridge .row{display:flex;gap:8px;margin-top:12px}
+.btn{border:0;border-radius:99px;padding:11px 18px;font-weight:700;font-size:14px;background:var(--ink);color:#f7f0e1;transition:transform .12s,background .12s}
+.btn:hover{background:var(--terra);transform:translateY(-1px)}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--paper2)}
+.btn.bronze{background:var(--bronze);color:#fff}
+.btn.small{padding:8px 14px;font-size:13px}
+.filterrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:8px 14px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.chip.on{background:var(--ink);color:#f7f0e1;border-color:var(--ink)}
+/* ---------- plan ---------- */
+.plansplit{display:grid;grid-template-columns:340px 1fr;gap:16px;margin-top:20px;align-items:start}
+.ringcard{background:#2b1d12;color:#f7f0e1;border-radius:22px;padding:24px;position:sticky;top:86px}
+.ringcard h3{font-size:22px}
+.ringcard .ringwrap{display:flex;align-items:center;gap:18px;margin:18px 0 6px}
+.ringcard .ring{width:132px;height:132px;flex:none}
+.ringcard .ring .t1{font-family:Fraunces,serif;font-size:34px;font-weight:800;fill:#f7f0e1}
+.ringcard .ring .t2{font-size:11px;font-weight:700;fill:#d9c9a8}
+.ringcard .bal b{font-family:Fraunces,serif;font-size:26px}
+.ringcard .bal span{display:block;font-size:13px;color:#d9c9a8;font-weight:600}
+.ringcard .warn{background:rgba(217,164,65,.16);border:1px solid rgba(217,164,65,.5);color:#f0cd8a;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;margin-top:12px}
+.ringcard label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#d9c9a8;margin:16px 0 6px}
+.ringcard input[type=number]{width:100%;background:#3a2a1a;border:1px solid #5a4630;color:#f7f0e1;border-radius:12px;padding:11px 12px;font-size:16px;font-weight:700}
+.planlist{display:flex;flex-direction:column;gap:12px}
+.planc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
