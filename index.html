@@ -667,6 +667,7 @@ function renderYearStrip(){
   el.innerHTML=html;
 }
 function planLeaveSet(){
+  var set={};
   state.plans.forEach(function(p){(p.leaveDates||[]).forEach(function(d){set[d]=true;});});
   return set;
 }
