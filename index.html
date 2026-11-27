@@ -388,3 +388,56 @@ footer b{color:var(--ink)}
     <p>Every long weekend above pairs with a drive from Bengaluru. Tap a card to see its best window — budgets are rough, for two people, two nights, before stay.</p></div>
   </div>
   <div class="rail" id="getawayRail"></div>
+  <div class="split2">
+    <div class="special">
+      <img src="chuttikit-flatlay.webp" alt="Passport, South India map, brass compass and coffee on cream linen" onerror="this.style.display='none'">
+      <div class="in">
+        <span class="pill">Kerala · 11–15 September</span>
+        <h3>Onam week needs zero leave days</h3>
+        <p>First Onam (Sat 11 Sep) to Sree Narayana Guru Jayanthi (Wed 15 Sep) is five days off in a row for offices on the Kerala state list — Thiruvonam itself is Sunday 12 September. If your office follows the Kerala list, this is the best free break of 2027.</p>
+      </div>
+    </div>
+    <div class="special dark">
+      <div class="in">
+        <span class="pill">Year-end · 25 December 2026</span>
+        <h3>Don't wait for 2027 to start</h3>
+        <p>Christmas Day 2026 is a Friday — an instant 3-day weekend, 28 days from now. Take Thursday 24 December off and it becomes 4 days. New Year's Day 2027 is also a Friday, so the year opens with another 3-day weekend.</p>
+        <p style="margin-top:12px"><button class="btn bronze" type="button" id="xmasBtn">Plan the Christmas break</button></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="letter">
+  <div class="sec-head">
+    <div><div class="no">05 · THE LEAVE LETTER</div>
+    <h2>Ask in one copy-paste</h2>
+    <p>Pick a break from your plan and ChuttiKit writes the email. Edit the names, copy it, send it — then book the bus before the prices move.</p></div>
+  </div>
+  <div class="letterbox">
+    <div class="grid">
+      <div><label for="ltPlan">Which break?</label><select id="ltPlan"></select></div>
+      <div><label for="ltName">Your name</label><input id="ltName" type="text" value="Abhiram"></div>
+      <div><label for="ltReason">Reason</label><select id="ltReason"><option>Family function</option><option>Travel with family</option><option>Festival at home</option><option>Personal work</option><option>Rest and recharge</option></select></div>
+    </div>
+    <textarea id="ltText" readonly aria-label="Leave letter"></textarea>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" type="button" id="copyLetterBtn">Copy letter</button>
+      <button class="btn ghost" type="button" id="regenLetterBtn">Rewrite it</button>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="guides">
+  <div class="sec-head">
+    <div><div class="no">06 · KNOW THE RULES</div>
+    <h2>Leave, in plain words</h2>
+    <p>Six things worth knowing before you burn a leave day. Rules vary by company and state — your offer letter and HR policy always win.</p></div>
+  </div>
+  <div class="guidegrid" id="guideGrid"></div>
+  <div class="settings">
+    <h3 style="font-size:20px;margin-bottom:6px">Settings &amp; your data</h3>
+    <p style="color:var(--ink2);font-size:14px">Everything lives on this device only — no account, no server. The calendar uses the central gazetted list; Kerala holidays are shown as extras.</p>
+    <div class="row" style="margin-top:14px">
+      <label class="tog"><input type="checkbox" id="tglKerala"> Count Kerala state holidays as days off in the bridge finder</label>
+      <label class="tog"><input type="checkbox" id="tglRestricted"> Count restricted holidays as days off too</label>
