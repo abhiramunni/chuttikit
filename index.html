@@ -441,3 +441,50 @@ footer b{color:var(--ink)}
     <div class="row" style="margin-top:14px">
       <label class="tog"><input type="checkbox" id="tglKerala"> Count Kerala state holidays as days off in the bridge finder</label>
       <label class="tog"><input type="checkbox" id="tglRestricted"> Count restricted holidays as days off too</label>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn ghost small" type="button" id="removeSamplesBtn">Remove sample breaks</button>
+      <button class="danger" type="button" id="eraseBtn">Erase everything</button>
+      <button class="btn ghost small" type="button" id="tourBtn">Replay the tour</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>ChuttiKit</b> — built for planning 2027 leave in India. Holiday dates: Department of Personnel &amp; Training O.M. No. 12/2/2023-JCA, 16 July 2026 (17 gazetted + 32 restricted holidays). Kerala state dates: Government of Kerala holiday list, 1 October 2026. Moon-sighted dates (Id-ul-Fitr, Id-ul-Zuha, Muharram, Milad-un-Nabi) are tentative and can move by a day. State and company lists differ — always check your employer's calendar before booking non-refundable travel.</p>
+    <p style="margin-top:8px">All data is stored on your device (localStorage). No account, no tracking.</p>
+  </div>
+</footer>
+
+<div class="sheet" id="daySheet" role="dialog" aria-modal="true"><div class="box" id="daySheetBox"></div></div>
+<div class="coach" id="coach" role="dialog" aria-modal="true"><div class="box" id="coachBox"></div></div>
+<div id="toast" role="status"></div>
+<script>
+(function(){
+"use strict";
+/* ============ DATA — verified 27 Nov 2026 ============
+   Gazetted 2027: DoPT O.M. No. 12/2/2023-JCA, 16 July 2026.
+   Restricted 2027: same order, Annexure II. Kerala state:
+   Government of Kerala holiday list, 1 Oct 2026.
+   Moon-sighted dates are tentative and can move by a day. */
+var HOLIDAYS=[
+ {d:"2026-12-25",name:"Christmas Day",type:"gazetted",note:"A Friday — an instant 3-day weekend to end the year."},
+ {d:"2027-01-01",name:"New Year's Day",type:"restricted",note:"A Friday. Restricted holiday — many offices close anyway."},
+ {d:"2027-01-14",name:"Makar Sankranti",type:"restricted"},
+ {d:"2027-01-15",name:"Pongal · Guru Gobind Singh Jayanti",type:"restricted"},
+ {d:"2027-01-26",name:"Republic Day",type:"gazetted",note:"One of the three national holidays."},
+ {d:"2027-02-11",name:"Vasant Panchami",type:"restricted"},
+ {d:"2027-03-06",name:"Maha Shivratri",type:"restricted"},
+ {d:"2027-03-10",name:"Id-ul-Fitr",type:"gazetted",moon:true,note:"Moon-sighted — can move by a day."},
+ {d:"2027-03-22",name:"Holika Dahan",type:"restricted"},
+ {d:"2027-03-23",name:"Holi",type:"gazetted"},
+ {d:"2027-03-26",name:"Good Friday",type:"gazetted"},
+ {d:"2027-04-07",name:"Ugadi · Gudi Padwa",type:"restricted"},
+ {d:"2027-04-15",name:"Ram Navami",type:"gazetted",note:"Vishu falls on the same day in Kerala."},
+ {d:"2027-04-19",name:"Mahavir Jayanti",type:"gazetted"},
+ {d:"2027-05-17",name:"Id-ul-Zuha (Bakrid)",type:"gazetted",moon:true,note:"Moon-sighted — can move by a day."},
+ {d:"2027-05-20",name:"Buddha Purnima",type:"gazetted"},
+ {d:"2027-06-16",name:"Muharram",type:"gazetted",moon:true,note:"Moon-sighted — can move by a day."},
+ {d:"2027-08-15",name:"Independence Day",type:"gazetted",note:"One of the three national holidays. Falls on a Sunday in 2027."},
+ {d:"2027-08-15",name:"Milad-un-Nabi (Id-e-Milad)",type:"gazetted",moon:true,note:"Moon-sighted — can move by a day. Shares the day with Independence Day."},
