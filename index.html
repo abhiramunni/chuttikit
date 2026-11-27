@@ -874,3 +874,59 @@ function hideIntro(){
 function renderAll(){
   renderMonth();renderBridges();renderPlan();renderStats();
 }
+function init(){
+  /* seed inputs */
+  $("annualLeave").value=state.annual;
+  $("patternSel").value=state.pattern;
+  $("tglKerala").checked=!!state.kerala;
+  $("tglRestricted").checked=!!state.restricted;
+  renderCountdown();renderGetaways();renderGuides();renderAll();
+  /* intro timing: quick on return visits */
+  setTimeout(hideIntro,state.seen?1200:3400);
+  $("introSkip").addEventListener("click",hideIntro);
+  $("intro").addEventListener("click",function(e){if(e.target===$("intro"))hideIntro();});
+  /* month nav + year strip */
+  $("prevMonth").addEventListener("click",function(){selMonth=(selMonth+11)%12;renderMonth();});
+  $("nextMonth").addEventListener("click",function(){selMonth=(selMonth+1)%12;renderMonth();});
+  $("yearStrip").addEventListener("click",function(e){
+    var b=e.target.closest("[data-m]");if(!b)return;
+    selMonth=+b.getAttribute("data-m");renderMonth();safeScroll($("calGrid"));
+  });
+  $("calGrid").addEventListener("click",function(e){
+    var b=e.target.closest("[data-d]");if(!b)return;
+    openDay(b.getAttribute("data-d"));
+  });
+  /* bridge filters */
+  $("bridgeFilters").addEventListener("click",function(e){
+    var b=e.target.closest("[data-f]");if(!b)return;
+    bridgeFilter=b.getAttribute("data-f");
+    Array.prototype.forEach.call($("bridgeFilters").querySelectorAll(".chip"),function(c){c.classList.toggle("on",c===b);});
+    renderBridges();
+  });
+  /* delegated clicks */
+  document.addEventListener("click",function(e){
+    var t=e.target;
+    var ab=t.closest("[data-add-bridge]");
+    if(ab){addBridge(ab.getAttribute("data-add-bridge"));$("daySheet").classList.remove("open");return;}
+    var sb=t.closest("[data-show-bridge]");
+    if(sb){var b=findBridge(sb.getAttribute("data-show-bridge"));if(b)openDay(b.hol.d);return;}
+    var dp=t.closest("[data-del-plan]");
+    if(dp){var id=dp.getAttribute("data-del-plan");state.plans=state.plans.filter(function(p){return p.id!==id;});save();renderAll();toast("Removed from your plan.");return;}
+    var ad=t.closest("[data-add-day]");
+    if(ad){$("daySheet").classList.remove("open");addSingleDay(ad.getAttribute("data-add-day"));return;}
+    var cs=t.closest("[data-close-sheet]");
+    if(cs){$("daySheet").classList.remove("open");return;}
+    var cn=t.closest("[data-coach-next]");
+    if(cn){if(coachStep<COACH.length-1){coachStep++;renderCoach();}else{$("coach").classList.remove("open");}return;}
+    var csk=t.closest("[data-coach-skip]");
+    if(csk){$("coach").classList.remove("open");return;}
+  });
+  $("daySheet").addEventListener("click",function(e){if(e.target===$("daySheet"))$("daySheet").classList.remove("open");});
+  $("coach").addEventListener("click",function(e){if(e.target===$("coach"))$("coach").classList.remove("open");});
+  /* plan controls */
+  $("annualLeave").addEventListener("change",function(){
+    var v=parseInt($("annualLeave").value,10);
+    if(isNaN(v)||v<0)v=0;if(v>60)v=60;
+    state.annual=v;$("annualLeave").value=v;save();renderPlan();
+  });
+  $("patternSel").addEventListener("change",function(){state.pattern=$("patternSel").value;save();renderAll();toast(state.pattern==="5"?"Week set to Monday–Friday.":"Week set to Monday–Saturday.");});
