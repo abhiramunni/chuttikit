@@ -337,3 +337,54 @@ footer b{color:var(--ink)}
     <div><div class="no">03 · MY 2027 PLAN</div>
     <h2>Your leave, spent on purpose</h2>
     <p>Three sample breaks are already pencilled in. Swap them for your own, or add a bridge from the finder above — the ring keeps count so you never promise the same leave day twice.</p></div>
+  </div>
+  <div class="plansplit">
+    <div class="ringcard">
+      <h3>Leave balance</h3>
+      <div class="ringwrap">
+        <svg class="ring" viewBox="0 0 132 132" aria-label="Leave balance ring">
+          <circle cx="66" cy="66" r="56" fill="none" stroke="#3a2a1a" stroke-width="12"/>
+          <circle id="ringArc" cx="66" cy="66" r="56" fill="none" stroke="#d9a441" stroke-width="12" stroke-linecap="round" stroke-dasharray="351.8" stroke-dashoffset="78" transform="rotate(-90 66 66)"/>
+          <text class="t1" x="66" y="64" text-anchor="middle" id="ringLeft">14</text>
+          <text class="t2" x="66" y="84" text-anchor="middle">days left</text>
+        </svg>
+        <div class="bal">
+          <div><b id="balUsed">4</b><span>days planned</span></div>
+          <div style="margin-top:10px"><b id="balOff">14</b><span>days off in total</span></div>
+        </div>
+      </div>
+      <div class="warn" id="balWarn" style="display:none">You have planned more leave than your balance. Remove a break or raise your balance below.</div>
+      <label for="annualLeave">Annual leave days (per year)</label>
+      <input type="number" id="annualLeave" min="0" max="60" value="18">
+      <label for="patternSel">My work week</label>
+      <select id="patternSel" style="width:100%;background:#3a2a1a;border:1px solid #5a4630;color:#f7f0e1;border-radius:12px;padding:11px 12px;font-size:15px;font-weight:600">
+        <option value="5">Monday–Friday (Sat–Sun off)</option>
+        <option value="6">Monday–Saturday (Sunday off)</option>
+      </select>
+      <p style="font-size:12.5px;color:#d9c9a8;margin-top:14px;line-height:1.5">Typical private-sector leave in India is 18–24 earned days a year, plus casual and sick leave. Your offer letter is the final word — this is a planning number, not a legal one.</p>
+    </div>
+    <div>
+      <div class="planlist" id="planList"></div>
+      <div class="addform" style="margin-top:12px">
+        <h4>Add your own leave</h4>
+        <div class="grid">
+          <div><label for="cfLabel">What is it for?</label><input id="cfLabel" type="text" placeholder="e.g. Cousin's wedding in Kochi"></div>
+          <div><label for="cfStart">First day off</label><input id="cfStart" type="date" value="2027-02-12"></div>
+          <div><label for="cfEnd">Last day off</label><input id="cfEnd" type="date" value="2027-02-13"></div>
+          <div><label for="cfKind">Type</label><select id="cfKind"><option>Annual leave</option><option>Casual leave</option><option>Work from home</option><option>Unpaid leave</option></select></div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn bronze" type="button" id="addCustomBtn">Add to my plan</button>
+          <button class="btn ghost" type="button" id="copyPlanBtn">Copy my plan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="wrap" id="getaways">
+  <div class="sec-head">
+    <div><div class="no">04 · WHERE TO GO</div>
+    <h2>One break, one getaway</h2>
+    <p>Every long weekend above pairs with a drive from Bengaluru. Tap a card to see its best window — budgets are rough, for two people, two nights, before stay.</p></div>
+  </div>
+  <div class="rail" id="getawayRail"></div>
