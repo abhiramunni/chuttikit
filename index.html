@@ -513,3 +513,25 @@ var GETAWAYS=[
  {name:"Pondicherry",km:"310 km · ~6.5 hrs",best:"Good Friday · 26–28 Mar",budget:"₹7–11k for two",tag:"French Quarter & beaches",grad:"linear-gradient(140deg,#d9a441,#c05b2e)",blurb:"Three days is exactly right: White Town cafes, Auroville and a slow evening on Rock Beach."},
  {name:"Hampi",km:"340 km · ~7 hrs",best:"Mahavir Jayanti · 17–19 Apr",budget:"₹6–9k for two",tag:"Ruins & boulders",grad:"linear-gradient(140deg,#c98a5b,#9c3d1e)",blurb:"November to February is the kind season. Go now — April is hot, start at sunrise."},
  {name:"Gokarna",km:"480 km · ~9 hrs",best:"Buddha Purnima · 20–23 May",budget:"₹8–12k for two",tag:"Quiet beaches",grad:"linear-gradient(140deg,#7a9ab0,#3a5a7a)",blurb:"Om Beach without the crowds. May is warm — pick a shack stay and live in the sea."},
+ {name:"Munnar",km:"480 km · ~10 hrs",best:"Onam week · 11–15 Sep",budget:"₹10–15k for two",tag:"Tea hills",grad:"linear-gradient(140deg,#6b8a5b,#3a5a3a)",blurb:"Onam week from Kerala is a gift: tea gardens, Eravikulam and a sadhya on the way back."},
+ {name:"Kodaikanal",km:"430 km · ~8 hrs",best:"Diwali · 29 Oct–2 Nov",budget:"₹9–13k for two",tag:"Lake & pine forests",grad:"linear-gradient(140deg,#8a7ab0,#4a3a6b)",blurb:"Post-monsoon Kodai is green and misty. Cycle the lake, walk Coaker's Walk at dawn."}
+];
+var GUIDES=[
+ {t:"Earned, casual, sick — what's what",b:"Earned leave (EL) is the big bucket, usually 18–24 days a year, meant for planned holidays. Casual leave (CL, ~12 days) is for short, sudden needs. Sick leave (SL, ~12 days) is for illness. EL is the one you plan trips with.",k:"Check your offer letter for your exact numbers."},
+ {t:"Carry-forward & encashment",b:"Unused earned leave usually carries forward to next year, up to a cap of 30–45 days depending on the company, and is normally encashed when you leave. Casual leave usually lapses on 31 December — spend it first.",k:"Encashment is taxed as salary, except at retirement."},
+ {t:"How to ask, without the awkwardness",b:"Give 2–4 weeks' notice for planned leave, name who covers your work, and put the handover in writing. Apply before you book non-refundable travel — a 'yes' in chat is not a 'yes' in the system.",k:"Fridays and Mondays are the most contested days."},
+ {t:"Central, state or company list?",b:"The 17 gazetted holidays are for central government offices. Your company follows its own list, and states add their own festivals — Kerala gets Onam week, Karnataka gets Ugadi. Never assume a holiday is yours until it is on your company's calendar.",k:"Ask HR for the 2027 list in January."},
+ {t:"Moon-sighted dates can shift",b:"Id-ul-Fitr, Id-ul-Zuha, Muharram and Milad-un-Nabi depend on the moon being sighted, so the government can move them by a day at short notice. If your bridge hangs on one of these, keep the day after free too.",k:"The date is confirmed a day or two before."},
+ {t:"The 2 restricted holidays",b:"Central government staff may pick any 2 of the 32 restricted holidays as extra days off. In private companies the list is usually fixed by HR — but it never hurts to ask whether New Year's Day or Makar Sankranti counts.",k:"Pongal (15 Jan, Friday) is the pick of 2027."}
+];
+/* ============ utils ============ */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function pad(n){return (n<10?"0":"")+n;}
+function dstr(dt){return dt.getFullYear()+"-"+pad(dt.getMonth()+1)+"-"+pad(dt.getDate());}
+function parseD(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
+function addDays(dt,n){return new Date(dt.getTime()+n*86400000);}
+function spanDays(a,b){return Math.round((parseD(b)-parseD(a))/86400000)+1;}
+var MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
