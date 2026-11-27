@@ -667,3 +667,56 @@ function renderYearStrip(){
   el.innerHTML=html;
 }
 function planLeaveSet(){
+  state.plans.forEach(function(p){(p.leaveDates||[]).forEach(function(d){set[d]=true;});});
+  return set;
+}
+function renderMonth(){
+  var grid=$("calGrid");if(!grid)return;
+  $("monthTitle").textContent=MON[selMonth]+" 2027";
+  var first=new Date(2027,selMonth,1), daysIn=new Date(2027,selMonth+1,0).getDate();
+  var html=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(function(d){return '<div class="dow">'+d+'</div>';}).join("");
+  var lset=planLeaveSet();
+  var today=new Date();today.setHours(0,0,0,0);
+  for(var i=0;i<first.getDay();i++)html+='<div class="day empty"></div>';
+  for(var d=1;d<=daysIn;d++){
+    var dt=new Date(2027,selMonth,d), s=dstr(dt), hs=holidaysOn(s);
+    var cls="day"+(isWeekend(dt)?" we":"")+(dt.getTime()===today.getTime()?" today":"")+(lset[s]?" plan":"");
+    var hn=hs.slice(0,2).map(function(h){return '<div class="hn'+(h.type==="restricted"?" r":h.type==="kerala"?" k":"")+'">'+esc(h.name)+'</div>';}).join("");
+    var lv=lset[s]?'<span class="lv">LEAVE</span>':"";
+    html+='<button type="button" class="'+cls+'" data-d="'+s+'"><span class="n">'+d+'</span>'+lv+hn+'</button>';
+  }
+  grid.innerHTML=html;
+  renderYearStrip();
+}
+function renderStats(){
+  var br=computeBridges();
+  $("statBridges").textContent=br.length;
+}
+
+/* ============ bridges UI ============ */
+function renderBridges(){
+  var grid=$("bridgeGrid");if(!grid)return;
+  var all=computeBridges();
+  var list=all.filter(function(b){
+    if(bridgeFilter==="one")return b.one.days>=4;
+    if(bridgeFilter==="free")return b.free.days>=3;
+    if(bridgeFilter==="five")return b.bridge.days>=5;
+    return true;
+  });
+  if(!list.length){grid.innerHTML='<div class="empty">No breaks match that filter. Try "All 13 breaks".</div>';return;}
+  grid.innerHTML=list.map(function(b,i){
+    var br=b.bridge;
+    var added=state.plans.some(function(p){return p.bridgeKey===b.key;});
+    var getaway=GETAWAYS[i%GETAWAYS.length];
+    var alt=[];
+    if(b.free.days>=3&&b.free.days<br.days)alt.push("No leave: "+b.free.days+" days off ("+fmtRange(b.free.start,b.free.end)+")");
+    if(b.one.days>b.free.days&&b.one.days<br.days)alt.push("1 leave day: "+b.one.days+" days off ("+fmtRange(b.one.start,b.one.end)+")");
+    return '<article class="bridge'+(i===0?" top":"")+'">'+
+      (i===0?'<span class="rank">Best value</span>':"")+
+      '<h3>'+esc(bridgeTitle(b))+'</h3>'+
+      '<div class="win">'+esc(fmtRange(br.start,br.end))+' · '+esc(b.hol.name)+'</div>'+
+      '<div class="nums"><div><b>'+br.days+'</b><span>days off</span></div><div><b>'+br.leave+'</b><span>leave day'+(br.leave===1?"":"s")+'</span></div><div><b>'+(br.days-br.leave)+'</b><span>free days</span></div></div>'+
+      '<div class="take">'+leaveLabel(br)+'</div>'+
+      (alt.length?'<p style="font-size:13px;color:var(--ink2);margin-top:10px">'+esc(alt.join(" · "))+'.</p>':"")+
+      '<p style="font-size:13px;color:var(--ink2);margin-top:10px">Go somewhere: <b>'+esc(getaway.name)+'</b> — '+esc(getaway.tag.toLowerCase())+'.</p>'+
+      '<div class="row"><button class="btn bronze small" type="button" data-add-bridge="'+esc(b.key)+'"'+(added?" disabled style=\"opacity:.5\"":"")+'>'+(added?"Added to my plan":"Add to my plan")+'</button>'+
