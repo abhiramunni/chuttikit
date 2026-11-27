@@ -720,3 +720,57 @@ function renderBridges(){
       (alt.length?'<p style="font-size:13px;color:var(--ink2);margin-top:10px">'+esc(alt.join(" · "))+'.</p>':"")+
       '<p style="font-size:13px;color:var(--ink2);margin-top:10px">Go somewhere: <b>'+esc(getaway.name)+'</b> — '+esc(getaway.tag.toLowerCase())+'.</p>'+
       '<div class="row"><button class="btn bronze small" type="button" data-add-bridge="'+esc(b.key)+'"'+(added?" disabled style=\"opacity:.5\"":"")+'>'+(added?"Added to my plan":"Add to my plan")+'</button>'+
+      '<button class="btn ghost small" type="button" data-show-bridge="'+esc(b.key)+'">Details</button></div>'+
+    '</article>';
+  }).join("");
+}
+function findBridge(key){
+  var all=computeBridges();
+  for(var i=0;i<all.length;i++)if(all[i].key===key)return all[i];
+  return null;
+}
+function addBridge(key){
+  var b=findBridge(key);if(!b)return;
+  if(state.plans.some(function(p){return p.bridgeKey===key;})){toast("That break is already in your plan.");return;}
+  var br=b.bridge;
+  state.plans.push({id:"p"+Date.now(),label:bridgeTitle(b),start:br.start,end:br.end,leaveDates:br.leaveDates.slice(),kind:"Annual leave",sample:false,note:br.days+" days off · "+br.leave+" leave day"+(br.leave===1?"":"s"),bridgeKey:key});
+  save();renderAll();
+  toast("Added: "+fmtRange(br.start,br.end)+" — "+br.days+" days off.");
+}
+/* ============ plan UI ============ */
+function planTotals(){
+  var used=0,off=0;
+  state.plans.forEach(function(p){used+=(p.leaveDates||[]).length;off+=spanDays(p.start,p.end);});
+  return {used:used,off:off,left:state.annual-used};
+}
+function renderPlan(){
+  var t=planTotals();
+  $("balUsed").textContent=t.used;
+  $("balOff").textContent=t.off;
+  $("ringLeft").textContent=Math.max(t.left,0);
+  var arc=$("ringArc");if(arc){var frac=Math.max(0,Math.min(1,t.left/state.annual));arc.setAttribute("stroke-dashoffset",String(Math.round(351.8*(1-frac))));}
+  var warn=$("balWarn");if(warn)warn.style.display=t.left<0?"block":"none";
+  var list=$("planList");if(!list)return;
+  if(!state.plans.length){list.innerHTML='<div class="empty">No breaks planned yet. Add one from the bridge finder above, or use the form below.</div>';return;}
+  list.innerHTML=state.plans.map(function(p){
+    return '<div class="planc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#b4762a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 9h18"/></svg></div>'+
+    '<div><h4>'+esc(p.label)+(p.sample?' <span class="sample">Sample</span>':"")+'</h4>'+
+    '<div class="meta">'+esc(fmtRange(p.start,p.end))+' · <b>'+(p.leaveDates||[]).length+' leave day'+((p.leaveDates||[]).length===1?"":"s")+'</b> · '+esc(p.kind)+'</div>'+
+    '<div class="meta" style="color:var(--ink2)">'+esc(p.note||"")+'</div></div>'+
+    '<button class="x" type="button" data-del-plan="'+esc(p.id)+'" aria-label="Remove">×</button></div>';
+  }).join("");
+  var sel=$("ltPlan");
+  if(sel){
+    sel.innerHTML=state.plans.map(function(p){return '<option value="'+esc(p.id)+'">'+esc(p.label)+' ('+esc(fmtRange(p.start,p.end))+')</option>';}).join("");
+    renderLetter();
+  }
+}
+function addCustomPlan(){
+  var label=$("cfLabel").value.trim()||"My leave";
+  var s=$("cfStart").value, e=$("cfEnd").value;
+  if(!s||!e){toast("Pick a first and last day.");return;}
+  if(e<s){toast("The last day is before the first day.");return;}
+  var firm=firmSet(), leaveDates=[], d=parseD(s);
+  while(d<=parseD(e)){if(!isOff(d,firm,null))leaveDates.push(dstr(d));d=addDays(d,1);}
+  state.plans.push({id:"p"+Date.now(),label:label,start:s,end:e,leaveDates:leaveDates,kind:$("cfKind").value,sample:false,note:spanDays(s,e)+" days off · "+leaveDates.length+" leave day"+(leaveDates.length===1?"":"s")});
+  save();renderAll();
