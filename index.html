@@ -215,3 +215,71 @@ footer b{color:var(--ink)}
 .coach{position:fixed;inset:0;z-index:130;background:rgba(36,23,8,.55);display:none;align-items:center;justify-content:center;padding:20px}
 .coach.open{display:flex}
 .coach .box{background:var(--card);border-radius:22px;max-width:440px;width:100%;padding:28px;animation:up .3s ease both}
+.coach h3{font-size:24px;font-weight:800}
+.coach p{color:var(--ink2);margin-top:8px;font-size:15px}
+.coach .dots{display:flex;gap:6px;margin:16px 0}
+.coach .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.coach .dots i.on{background:var(--terra)}
+.coach .row{display:flex;gap:10px;justify-content:flex-end}
+.empty{border:1px dashed var(--line);border-radius:16px;padding:26px;text-align:center;color:var(--ink2);font-weight:600}
+@media(max-width:900px){
+  .yearstrip{grid-template-columns:repeat(3,1fr)}
+  .bridgegrid{grid-template-columns:1fr}
+  .plansplit{grid-template-columns:1fr}
+  .ringcard{position:static}
+  .split2{grid-template-columns:1fr}
+  .guidegrid{grid-template-columns:1fr 1fr}
+  .statstrip{grid-template-columns:repeat(2,1fr)}
+  .letterbox .grid{grid-template-columns:1fr}
+  header.top nav{display:none}
+  .cal .day{min-height:58px}
+  .cal .day .hn{display:none}
+}
+@media(max-width:560px){
+  .guidegrid{grid-template-columns:1fr}
+  .countcard .nums{margin-left:0}
+  .addform .grid{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+<body>
+<!-- intro -->
+<div id="intro" role="dialog" aria-label="Welcome">
+  <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fffaf0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 9h18"/><path d="M7 14l2.5 2.5L16 10" stroke="#fffaf0"/></svg></div>
+  <h1>ChuttiKit</h1>
+  <div class="tag">Every 2027 holiday. Every long weekend hiding inside it.</div>
+  <div class="bar"><i></i></div>
+  <button id="introSkip" type="button">Skip intro</button>
+</div>
+
+<header class="top">
+  <div class="in">
+    <a class="logo" href="#"><span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="#fffaf0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 9h18"/><path d="M7 14l2.5 2.5L16 10"/></svg></span>ChuttiKit</a>
+    <nav>
+      <a href="#calendar">2027 calendar</a>
+      <a href="#bridges">Long weekends</a>
+      <a href="#plan">My plan</a>
+      <a href="#getaways">Getaways</a>
+      <a href="#letter">Leave letter</a>
+      <a href="#guides">Guides</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="ph"><img src="chuttikit-hero.webp" alt="A wall calendar, brass pen and filter coffee in warm morning light" onerror="this.style.display='none'"></div>
+  <div class="cap">
+    <div class="kicker">India · 2027 · Gazetted holidays, verified</div>
+    <h1>2027 has 17 holidays.<br>Spend them like they matter.</h1>
+    <p class="sub">The official list is out. ChuttiKit finds the long weekends hiding between the holidays — and turns your leave days into real trips, not wasted Mondays.</p>
+  </div>
+</section>
+
+<div class="countcard">
+  <div class="box">
+    <div class="big"><small>Next holiday</small><span id="nextHolName">Christmas Day</span><div style="font-size:14px;font-family:Inter,sans-serif;font-weight:600;color:var(--ink2);margin-top:4px" id="nextHolSub">Friday, 25 December 2026</div></div>
+    <div class="nums">
+      <div><b id="cdD">28</b><span>days</span></div>
+      <div><b id="cdH">00</b><span>hours</span></div>
+      <div><b id="cdM">00</b><span>mins</span></div>
