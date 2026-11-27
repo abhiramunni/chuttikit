@@ -60,3 +60,14 @@ Diwali 29 Oct–2 Nov 5d/2L, Independence Day 14–17 Aug 4d/2L.
 ## License
 
 MIT
+
+## Top bridges of 2027
+
+| Break | Dates | Days off | Leave needed |
+|---|---|---|---|
+| Holi + Good Friday | 23–28 Mar | 6 | 2 |
+| Ram Navami + Mahavir Jayanti | 15–20 Apr | 6 | 2 |
+| Id-ul-Zuha + Buddha Purnima | 15–20 May | 6 | 2 |
+| Republic Day | 23–27 Jan | 5 | 2 |
+| Id-ul-Fitr | 10–14 Mar | 5 | 2 |
+| Diwali | 29 Oct–2 Nov | 5 | 2 |
