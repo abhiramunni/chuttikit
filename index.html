@@ -535,3 +535,60 @@ function spanDays(a,b){return Math.round((parseD(b)-parseD(a))/86400000)+1;}
 var MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
 var MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 var DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function fmtD(s){var d=parseD(s);return DOW[d.getDay()]+" "+d.getDate()+" "+MONS[d.getMonth()];}
+function fmtRange(a,b){var da=parseD(a),db=parseD(b);
+  if(da.getMonth()===db.getMonth()) return DOW[da.getDay()]+" "+da.getDate()+" – "+DOW[db.getDay()]+" "+db.getDate()+" "+MONS[da.getMonth()];
+  return fmtD(a)+" – "+fmtD(b);}
+function safeScroll(el){try{if(el&&el.scrollIntoView)el.scrollIntoView({behavior:"smooth",block:"start"});}catch(e){}}
+var toastTimer=null;
+function toast(msg){var t=$("toast");if(!t)return;t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},2600);}
+/* ============ state ============ */
+var KEY="chuttikit-v1";
+function seedPlans(){return [
+ {id:"p1",label:"Republic Day escape — Ooty",start:"2027-01-23",end:"2027-01-27",leaveDates:["2027-01-25","2027-01-27"],kind:"Annual leave",sample:true,note:"5 days off · 2 leave days"},
+ {id:"p2",label:"Ram Navami + Mahavir — Coorg",start:"2027-04-15",end:"2027-04-20",leaveDates:["2027-04-16","2027-04-20"],kind:"Annual leave",sample:true,note:"6 days off · 2 leave days"},
+ {id:"p3",label:"Diwali week — home in Kerala",start:"2027-10-29",end:"2027-11-02",leaveDates:["2027-11-01","2027-11-02"],kind:"Annual leave",sample:true,note:"5 days off · 2 leave days"}
+];}
+function defaultState(){return {annual:18,pattern:"5",kerala:false,restricted:false,plans:seedPlans(),samples:true,seen:false};}
+var state=defaultState();
+try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);if(s&&typeof s==="object"){state=Object.assign(defaultState(),s);}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+var selMonth=0; /* January 2027 */
+var bridgeFilter="all";
+var coachStep=0;
+
+/* ============ holiday sets & bridges ============ */
+function firmSet(){
+  var set={};
+  HOLIDAYS.forEach(function(h){
+    if(h.type==="gazetted") set[h.d]=true;
+    else if(h.type==="kerala"&&state.kerala) set[h.d]=true;
+    else if(h.type==="restricted"&&state.restricted) set[h.d]=true;
+  });
+  return set;
+}
+function isWeekend(dt){var g=dt.getDay();return state.pattern==="5"?(g===0||g===6):(g===0);}
+function isOff(dt,firm,leaveSet){
+  var s=dstr(dt);
+  return isWeekend(dt)||!!firm[s]||(leaveSet&&!!leaveSet[s]);
+}
+function holidaysOn(s){return HOLIDAYS.filter(function(h){return h.d===s;});}
+function bridgeFor(holDateStr){
+  var firm=firmSet(), hol=parseD(holDateStr);
+  function neighbours(dir){
+    var out=[],d=new Date(hol);
+    while(out.length<2){d=addDays(d,dir);if(!isOff(d,firm,null))out.push(new Date(d));}
+    return out;
+  }
+  var before=neighbours(-1), after=neighbours(1);
+  /* best window using at most maxLeave leave days (0, 1 or 2).
+     Leave days are the nearest working days before/after the holiday,
+     so a weekend between two leave days still counts as one unbroken break. */
+  function bestWith(maxLeave){
+    var best=null;
+    for(var b=0;b<=2;b++)for(var a=0;a<=2;a++){
+      if(b+a>maxLeave)continue;
+      var leave=before.slice(0,b).concat(after.slice(0,a));
+      var lset={};leave.forEach(function(d){lset[dstr(d)]=true;});
+      var s=new Date(hol),e=new Date(hol);
+      while(isOff(addDays(s,-1),firm,lset))s=addDays(s,-1);
