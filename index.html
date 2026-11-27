@@ -592,3 +592,78 @@ function bridgeFor(holDateStr){
       var lset={};leave.forEach(function(d){lset[dstr(d)]=true;});
       var s=new Date(hol),e=new Date(hol);
       while(isOff(addDays(s,-1),firm,lset))s=addDays(s,-1);
+      while(isOff(addDays(e,1),firm,lset))e=addDays(e,1);
+      var days=spanDays(dstr(s),dstr(e));
+      var cand={start:dstr(s),end:dstr(e),days:days,leave:leave.length,leaveDates:leave.map(dstr)};
+      if(!best||cand.days>best.days||(cand.days===best.days&&cand.leave<best.leave))best=cand;
+    }
+    return best;
+  }
+  return {free:bestWith(0),one:bestWith(1),best:bestWith(2)};
+}
+function computeBridges(){
+  var seen={},out=[];
+  HOLIDAYS.forEach(function(h){
+    if(h.type!=="gazetted")return;
+    if(h.d<"2027-01-01")return;
+    var br=bridgeFor(h.d).best;
+    if(!br||br.days<3)return;
+    var key=br.start+"|"+br.end;
+    if(seen[key])return;seen[key]=true;
+    var all=bridgeFor(h.d);
+    out.push({key:key,hol:h,bridge:br,free:all.free,one:all.one});
+  });
+  out.sort(function(x,y){
+    var sx=x.bridge.days-x.bridge.leave, sy=y.bridge.days-y.bridge.leave;
+    if(sy!==sx)return sy-sx;
+    if(y.bridge.days!==x.bridge.days)return y.bridge.days-x.bridge.days;
+    return x.bridge.leave-y.bridge.leave;
+  });
+  return out;
+}
+function leaveLabel(br){
+  if(br.leave===0)return "No leave needed — it is already a long weekend.";
+  var names=br.leaveDates.map(fmtD);
+  if(br.leave===1)return "Take <b>"+esc(names[0])+"</b> off.";
+  return "Take <b>"+esc(names.join(" + "))+"</b> off.";
+}
+function bridgeTitle(b){
+  /* name every gazetted holiday inside the window, e.g. "Holi + Good Friday" */
+  var names=[];
+  HOLIDAYS.forEach(function(h){
+    if(h.type!=="gazetted")return;
+    if(h.d>=b.bridge.start&&h.d<=b.bridge.end&&names.indexOf(h.name)===-1)names.push(h.name);
+  });
+  return names.slice(0,2).join(" + ")||b.hol.name;
+}
+/* ============ countdown ============ */
+function nextHoliday(){
+  var now=new Date();now.setHours(0,0,0,0);
+  var list=HOLIDAYS.slice().sort(function(a,b){return a.d<b.d?-1:1;});
+  for(var i=0;i<list.length;i++){if(parseD(list[i].d)>=now)return list[i];}
+  return list[list.length-1];
+}
+function renderCountdown(){
+  var h=nextHoliday(), target=parseD(h.d);
+  $("nextHolName").textContent=h.name;
+  $("nextHolSub").textContent=fmtD(h.d)+", "+target.getFullYear()+(h.type==="restricted"?" · Restricted holiday":"")+(h.type==="kerala"?" · Kerala state holiday":"");
+  function tick(){
+    var diff=target.getTime()-Date.now();
+    if(diff<0)diff=0;
+    var d=Math.floor(diff/86400000),hh=Math.floor(diff%86400000/3600000),mm=Math.floor(diff%3600000/60000),ss=Math.floor(diff%60000/1000);
+    $("cdD").textContent=d;$("cdH").textContent=pad(hh);$("cdM").textContent=pad(mm);$("cdS").textContent=pad(ss);
+  }
+  tick();setInterval(tick,1000);
+}
+/* ============ year strip & month grid ============ */
+function renderYearStrip(){
+  var el=$("yearStrip");if(!el)return;
+  var html="";
+  for(var m=0;m<12;m++){
+    var hs=HOLIDAYS.filter(function(h){var d=parseD(h.d);return d.getFullYear()===2027&&d.getMonth()===m;});
+    var dots=hs.slice(0,6).map(function(h){return '<i class="'+(h.type==="gazetted"?"g":h.type==="kerala"?"k":"r")+'"></i>';}).join("");
+    html+='<button type="button" class="ymini'+(m===selMonth?" sel":"")+'" data-m="'+m+'"><b>'+MON[m]+'</b><span>'+hs.length+' holiday'+(hs.length===1?"":"s")+'</span><span class="dots">'+dots+'</span></button>';
+  }
+  el.innerHTML=html;
+}
+function planLeaveSet(){
