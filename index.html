@@ -822,3 +822,55 @@ function openDay(s){
     html+='<p>No holiday on this day. It is '+(isWeekend(dt)?'a weekend — already yours.':'a working day — a leave day here would cost 1 day of balance.')+'</p>';
   }else{
     hs.forEach(function(h){
+      html+='<p style="margin-bottom:10px"><b>'+esc(h.name)+'</b> — '+(h.type==="gazetted"?"Gazetted holiday":h.type==="kerala"?"Kerala state holiday":"Restricted holiday (optional)")+(h.moon?" · moon-sighted, may shift a day":"")+(h.note?"<br><span style=\"color:var(--ink2)\">"+esc(h.note)+"</span>":"")+'</p>';
+    });
+    var g=hs.find(function(h){return h.type==="gazetted"&&h.d>="2027-01-01";});
+    if(g){
+      var b=computeBridges().find(function(x){return g.d>=x.bridge.start&&g.d<=x.bridge.end;});
+      if(b){
+        var br=b.bridge;
+        html+='<p style="background:#fbf1d8;border:1px dashed var(--bronze);border-radius:10px;padding:10px 12px"><b>The bridge:</b> '+esc(fmtRange(br.start,br.end))+' is '+br.days+' days off. '+leaveLabel(br)+'</p>';
+        html+='<p style="margin-top:12px"><button class="btn bronze" type="button" data-add-bridge="'+esc(b.key)+'">Add this break to my plan</button></p>';
+      }
+    }
+  }
+  var lset=planLeaveSet();
+  if(lset[s])html+='<p style="margin-top:10px;color:var(--ok);font-weight:700">This day is already in your leave plan.</p>';
+  html+='<p style="margin-top:12px"><button class="btn ghost small" type="button" data-add-day="'+esc(s)+'">Add this day as leave</button></p>';
+  html+='</div>';
+  box.innerHTML=html;
+  $("daySheet").classList.add("open");
+}
+function addSingleDay(s){
+  var firm=firmSet(), dt=parseD(s);
+  if(isOff(dt,firm,null)){toast("That day is already a day off — no leave needed.");return;}
+  if(planLeaveSet()[s]){toast("That day is already in your plan.");return;}
+  state.plans.push({id:"p"+Date.now(),label:"Leave — "+fmtD(s),start:s,end:s,leaveDates:[s],kind:"Annual leave",sample:false,note:"1 day off · 1 leave day"});
+  save();renderAll();toast("Added "+fmtD(s)+" to your plan.");
+}
+/* ============ coach & intro ============ */
+var COACH=[
+ {t:"Your whole year, on one wall",b:"Every 2027 holiday is on the calendar — gazetted, restricted and Kerala state days. Tap any month, then any day, to see what it is and how to stretch it."},
+ {t:"Bridges turn holidays into trips",b:"The bridge finder ranks every long weekend by value. One leave day next to Republic Day or Ram Navami buys you 4–5 days off. Tap 'Add to my plan' and the ring keeps count."},
+ {t:"Ask, then book",b:"The leave letter writes itself from your plan. Copy it, send it, and book the bus before the prices move."}
+];
+function showCoach(){
+  coachStep=0;renderCoach();$("coach").classList.add("open");
+}
+function renderCoach(){
+  var c=COACH[coachStep];
+  $("coachBox").innerHTML='<h3>'+esc(c.t)+'</h3><p>'+esc(c.b)+'</p>'+
+  '<div class="dots">'+COACH.map(function(_,i){return '<i class="'+(i===coachStep?"on":"")+'"></i>';}).join("")+'</div>'+
+  '<div class="row"><button class="btn ghost" type="button" data-coach-skip>Skip</button>'+
+  '<button class="btn" type="button" data-coach-next>'+(coachStep===COACH.length-1?"Start planning":"Next")+'</button></div>';
+}
+function hideIntro(){
+  var el=$("intro");if(!el)return;
+  el.classList.add("gone");
+  setTimeout(function(){el.style.display="none";},800);
+  if(!state.seen){state.seen=true;save();setTimeout(showCoach,500);}
+}
+/* ============ render all & wiring ============ */
+function renderAll(){
+  renderMonth();renderBridges();renderPlan();renderStats();
+}
