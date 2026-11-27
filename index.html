@@ -930,3 +930,54 @@ function init(){
     state.annual=v;$("annualLeave").value=v;save();renderPlan();
   });
   $("patternSel").addEventListener("change",function(){state.pattern=$("patternSel").value;save();renderAll();toast(state.pattern==="5"?"Week set to Monday–Friday.":"Week set to Monday–Saturday.");});
+  $("tglKerala").addEventListener("change",function(){state.kerala=$("tglKerala").checked;save();renderAll();});
+  $("tglRestricted").addEventListener("change",function(){state.restricted=$("tglRestricted").checked;save();renderAll();});
+  $("addCustomBtn").addEventListener("click",addCustomPlan);
+  $("copyPlanBtn").addEventListener("click",function(){
+    var t=planTotals();
+    var lines=state.plans.map(function(p){return "• "+p.label+" — "+fmtRange(p.start,p.end)+" ("+(p.leaveDates||[]).length+" leave days)";});
+    var txt="My 2027 leave plan ("+t.used+" of "+state.annual+" days used, "+t.off+" days off in total):\n"+lines.join("\n");
+    copyText(txt,"Plan copied.");
+  });
+  $("removeSamplesBtn").addEventListener("click",function(){
+    if(!state.plans.some(function(p){return p.sample;})){toast("No sample breaks left to remove.");return;}
+    state.plans=state.plans.filter(function(p){return !p.sample;});state.samples=false;save();renderAll();toast("Sample breaks removed — your own plans stay.");
+  });
+  $("eraseBtn").addEventListener("click",function(){
+    if(!confirm("Erase everything? Your leave balance, plans and settings go back to the start."))return;
+    try{localStorage.removeItem(KEY);}catch(e){}
+    state=defaultState();save();
+    $("annualLeave").value=state.annual;$("patternSel").value=state.pattern;
+    $("tglKerala").checked=false;$("tglRestricted").checked=false;
+    renderAll();renderLetter();toast("Erased. Fresh start.");
+  });
+  $("tourBtn").addEventListener("click",showCoach);
+  /* letter */
+  $("ltPlan").addEventListener("change",renderLetter);
+  $("ltName").addEventListener("input",renderLetter);
+  $("ltReason").addEventListener("change",renderLetter);
+  $("copyLetterBtn").addEventListener("click",function(){copyText($("ltText").value,"Letter copied — paste it into your email.");});
+  $("regenLetterBtn").addEventListener("click",function(){letterStyle=1-letterStyle;renderLetter();toast(letterStyle?"Shorter version.":"Formal version.");});
+  $("xmasBtn").addEventListener("click",function(){
+    state.plans.push({id:"p"+Date.now(),label:"Christmas break — 2026",start:"2026-12-24",end:"2026-12-27",leaveDates:["2026-12-24"],kind:"Annual leave",sample:false,note:"4 days off · 1 leave day"});
+    save();renderAll();safeScroll($("plan"));toast("Christmas break added — Thu 24 Dec off, Fri–Sun free.");
+  });
+}
+function copyText(txt,msg){
+  function done(){toast(msg);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fallback();});}
+  else fallback();
+  function fallback(){
+    var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");}catch(e){}
+    document.body.removeChild(ta);done();
+  }
+}
+/* The script sits at the end of the document, so every element above already exists. */
+init();
+window.ChuttiKit={state:function(){return state;},HOLIDAYS:HOLIDAYS,computeBridges:computeBridges,bridgeFor:bridgeFor,planTotals:planTotals,GETAWAYS:GETAWAYS,GUIDES:GUIDES};
+})();
+</script>
+</body>
+</html>
