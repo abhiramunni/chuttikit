@@ -283,3 +283,57 @@ footer b{color:var(--ink)}
       <div><b id="cdD">28</b><span>days</span></div>
       <div><b id="cdH">00</b><span>hours</span></div>
       <div><b id="cdM">00</b><span>mins</span></div>
+      <div><b id="cdS">00</b><span>secs</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="wrap" id="calendar">
+  <div class="sec-head">
+    <div><div class="no">01 · THE YEAR AT A GLANCE</div>
+    <h2>The 2027 calendar, all in one place</h2>
+    <p>Every gazetted holiday (the 17 days central government offices close), plus the restricted and Kerala state holidays worth knowing about. Tap a month, then tap any day for the full story.</p></div>
+  </div>
+  <div class="statstrip">
+    <div class="stat"><b>17</b><span>gazetted holidays in 2027</span><em>DoPT list, 16 July 2026</em></div>
+    <div class="stat"><b>11</b><span>fall on weekdays</span><em>for a Monday–Friday week</em></div>
+    <div class="stat"><b id="statBridges">13</b><span>breaks of 3 days or more</span><em>with at most 2 leave days</em></div>
+    <div class="stat"><b>5</b><span>lost to weekends</span><em>no substitute day is given</em></div>
+  </div>
+  <div class="yearstrip" id="yearStrip"></div>
+  <div class="monthbox">
+    <div class="monthnav">
+      <button type="button" id="prevMonth" aria-label="Previous month">&#8249;</button>
+      <h3 id="monthTitle">January 2027</h3>
+      <button type="button" id="nextMonth" aria-label="Next month">&#8250;</button>
+    </div>
+    <div class="cal" id="calGrid"></div>
+    <div class="legend">
+      <span><i style="background:var(--bronze)"></i>Gazetted holiday</span>
+      <span><i style="background:#c9a35c"></i>Restricted (optional)</span>
+      <span><i style="background:var(--terra)"></i>Kerala state holiday</span>
+      <span><i style="background:var(--ok)"></i>Your planned leave</span>
+    </div>
+  </div>
+</section>
+<section class="wrap" id="bridges">
+  <div class="sec-head">
+    <div><div class="no">02 · THE BRIDGE FINDER</div>
+    <h2>Long weekends, ranked by value</h2>
+    <p>A "bridge" is simple: a holiday sits next to a weekend, and one or two leave days stretch it into a real break. These are computed from the gazetted list and your work week — best value first, so the top card is the smartest leave day you will spend all year.</p></div>
+  </div>
+  <div class="filterrow" id="bridgeFilters">
+    <button class="chip on" type="button" data-f="all">All 13 breaks</button>
+    <button class="chip" type="button" data-f="one">4+ days off, 1 leave day</button>
+    <button class="chip" type="button" data-f="free">Already a long weekend</button>
+    <button class="chip" type="button" data-f="five">5 days off or more</button>
+  </div>
+  <div class="bridgegrid" id="bridgeGrid"></div>
+  <p style="color:var(--ink2);font-size:13.5px;margin-top:14px">How this is worked out: for each holiday we look at the nearest working days before and after it, and take at most 2 of them as leave. The window shown is the longest unbroken run of days off that results. Moon-sighted holidays (Id-ul-Fitr, Id-ul-Zuha, Muharram, Milad-un-Nabi) can shift by a day — confirm near the date.</p>
+</section>
+
+<section class="wrap" id="plan">
+  <div class="sec-head">
+    <div><div class="no">03 · MY 2027 PLAN</div>
+    <h2>Your leave, spent on purpose</h2>
+    <p>Three sample breaks are already pencilled in. Swap them for your own, or add a bridge from the finder above — the ring keeps count so you never promise the same leave day twice.</p></div>
