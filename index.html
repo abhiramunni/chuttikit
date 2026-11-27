@@ -774,3 +774,51 @@ function addCustomPlan(){
   while(d<=parseD(e)){if(!isOff(d,firm,null))leaveDates.push(dstr(d));d=addDays(d,1);}
   state.plans.push({id:"p"+Date.now(),label:label,start:s,end:e,leaveDates:leaveDates,kind:$("cfKind").value,sample:false,note:spanDays(s,e)+" days off · "+leaveDates.length+" leave day"+(leaveDates.length===1?"":"s")});
   save();renderAll();
+  toast("Added: "+label+" — "+leaveDates.length+" leave day"+(leaveDates.length===1?"":"s")+".");
+}
+/* ============ getaways & guides ============ */
+function renderGetaways(){
+  var rail=$("getawayRail");if(!rail)return;
+  rail.innerHTML=GETAWAYS.map(function(g){
+    return '<article class="gcard"><div class="gph" style="background:'+g.grad+'"><b>'+esc(g.name)+'</b></div>'+
+    '<div class="gb"><p>'+esc(g.blurb)+'</p>'+
+    '<div class="tags"><span>'+esc(g.km)+'</span><span>'+esc(g.budget)+'</span></div>'+
+    '<p style="margin-top:8px"><b>Best window:</b> '+esc(g.best)+'</p></div></article>';
+  }).join("");
+}
+function renderGuides(){
+  var grid=$("guideGrid");if(!grid)return;
+  grid.innerHTML=GUIDES.map(function(g,i){
+    return '<article class="guide"><div class="n">Guide '+(i+1)+'</div><h3>'+esc(g.t)+'</h3><p>'+esc(g.b)+'</p><p class="k">'+esc(g.k)+'</p></article>';
+  }).join("");
+}
+/* ============ leave letter ============ */
+var letterStyle=0;
+function renderLetter(){
+  var ta=$("ltText");if(!ta)return;
+  var p=null;
+  var sel=$("ltPlan");
+  if(sel&&sel.value){for(var i=0;i<state.plans.length;i++)if(state.plans[i].id===sel.value)p=state.plans[i];}
+  if(!p)p=state.plans[0];
+  if(!p){ta.value="Add a break to your plan first — the letter writes itself from it.";return;}
+  var name=($("ltName").value||"Abhiram").trim();
+  var reason=$("ltReason").value||"Family function";
+  var range=fmtRange(p.start,p.end);
+  var days=(p.leaveDates||[]).length;
+  if(letterStyle===0){
+    ta.value="Subject: Leave application — "+range+" ("+days+" working day"+(days===1?"":"s")+")\n\nDear Sir/Madam,\n\nI am writing to request leave from "+range+" ("+days+" working day"+(days===1?"":"s")+"), for "+reason.toLowerCase()+".\n\nI will complete my pending work before I go and share a handover note with the team, so nothing is left hanging while I am away. Please let me know if these dates work, or if another window would suit the team better.\n\nThank you,\n"+name;
+  }else{
+    ta.value="Subject: Leave request — "+range+"\n\nHi,\n\nCould I please take leave from "+range+" ("+days+" working day"+(days===1?"":"s")+") for "+reason.toLowerCase()+"?\n\nI will finish my pending work beforehand and leave a handover note for the team. Happy to adjust the dates if the team needs me on any of those days.\n\nThanks,\n"+name;
+  }
+}
+
+/* ============ day sheet ============ */
+function openDay(s){
+  var hs=holidaysOn(s), dt=parseD(s);
+  var box=$("daySheetBox");if(!box)return;
+  var html='<button class="close" type="button" data-close-sheet aria-label="Close">×</button>';
+  html+='<h3>'+esc(fmtD(s))+' 2027</h3><div class="meta">'+esc(DOW[dt.getDay()]==="Sun"||dt.getDay()===6?"Weekend":"Working day")+(isWeekend(dt)?" · your week off":"")+'</div><div class="body">';
+  if(!hs.length){
+    html+='<p>No holiday on this day. It is '+(isWeekend(dt)?'a weekend — already yours.':'a working day — a leave day here would cost 1 day of balance.')+'</p>';
+  }else{
+    hs.forEach(function(h){
